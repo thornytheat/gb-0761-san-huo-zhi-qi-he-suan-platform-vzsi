@@ -1,0 +1,21 @@
+:root {
+  --bg: #eef0f7;
+  --surface: #fff;
+  --surface-2: #f6f6fc;
+  --ink: #161936;
+  --ink-muted: #585d7b;
+  --line: #dce0ee;
+  --line-strong: #b9bfd8;
+  --accent: #413dc3;
+  --accent-ink: #fff;
+  --ok: #236744;
+  --warn: #855400;
+  --bad: #9b2a42;
+  --info: #65708a;
+  --font-ui: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-num: 'SF Mono', Consolas, monospace;
+  --radius: 4px;
+  --pad: 15px;
+  --gap: 12px;
+  --shadow: 0 2px 5px #2022470b;
+}

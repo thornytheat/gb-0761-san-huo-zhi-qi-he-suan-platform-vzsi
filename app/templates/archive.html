@@ -1,0 +1,10 @@
+<section class="panel archive">
+  <h3>{{ '留档清单' if stage == 'runs' else '签发查验' }}</h3>
+  {% if saved %}<p role="status">{{ '已生成运行' if inserted else '已复用运行' }} {{ saved.run_id[:12] }}</p>{% endif %}
+  {% if certificate %}
+  <dl><dt>结算资格</dt><dd>{{ '可结算' if certificate.can_settle else '待核' }}</dd><dt>摘要 SHA-256</dt><dd>{{ certificate.integrity_sha256 }}</dd><dt>分段证据</dt><dd>{{ certificate.evidence_counts.intervals }} 条</dd><dt>隔离证据</dt><dd>{{ certificate.evidence_counts.isolated }} 条</dd></dl>
+  {% endif %}
+  <div class="scroll"><table><thead><tr><th>运行</th><th>规则</th><th>生成时间</th><th>耗时 (ms)</th></tr></thead><tbody>
+  {% for run in records %}<tr><td><a href="/evidence?run={{ run.run_id }}">{{ run.run_id[:14] }}</a></td><td>{{ run.rule }}</td><td>{{ run.created_at }}</td><td class="number">{{ run.duration_ms }}</td></tr>{% else %}<tr><td colspan="4"><a href="/runs">先留档一次航次。</a></td></tr>{% endfor %}
+  </tbody></table></div>
+</section>

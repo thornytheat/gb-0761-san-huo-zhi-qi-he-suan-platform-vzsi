@@ -1,0 +1,45 @@
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+button, select, .button { border: 1px solid var(--line-strong); padding: 6px 10px; font: inherit; background: var(--surface); color: var(--ink); border-radius: var(--radius); }
+button, .button { background: var(--accent); color: white; border-color: var(--accent); cursor: pointer; text-decoration: none; }
+.toolbar details[open] { order: 1; width: 100%; }
+summary { cursor: pointer; font-weight: 650; }
+.editors { display: grid; gap: 10px; grid-template-columns: repeat(2,minmax(0,1fr)); }
+textarea { box-sizing: border-box; display: block; width: 100%; font: 11px var(--font-num); }
+.panel, .kpis { background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); min-width: 0; }
+.panel h3, .panel summary, .panel.notes, .problem { padding: 10px 13px; }
+.problem { color: var(--bad); }
+.kpis { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); margin: 0; }
+.kpis div { padding: 10px var(--pad); border-right: 1px solid var(--line); }
+dt, small, .stamp { color: var(--ink-muted); }
+dd, .number, .entry b, .entry span, .duel-total { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.kpis dd { margin: 3px 0 0; font-size: clamp(16px,3vw,27px); }
+.kpis dd small { font-size: 10px; }
+.scroll { overflow: auto; max-height: 43vh; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
+th, td { padding: 7px 11px; border-top: 1px solid var(--line); white-space: nowrap; }
+th { position: sticky; top: 0; background: var(--surface-2); z-index: 1; }
+.number { text-align: right; }
+.balance { position: sticky; top: 52px; display: flex; align-items: center; justify-content: space-between; gap: 6px; background: var(--surface); z-index: 2; border-bottom: 1px solid var(--line); }
+.balance span { padding-right: 13px; color: var(--ink-muted); }
+.ledger-cap, .duel-total, .entry { display: grid; grid-template-columns: minmax(0,1fr) 147px minmax(0,1.12fr); text-align: right; }
+.ledger-cap { grid-template-areas: 'ship blank port'; background: var(--surface-2); }
+.ledger-cap strong:first-child { grid-area: ship; }
+.ledger-cap strong:last-child { grid-area: port; }
+.ledger-cap strong, .duel-total > *, .entry > div { padding: 10px 15px; }
+.entry { border-top: 1px solid var(--line); border-left: 2px solid transparent; }
+.entry.mismatch { border-left-color: var(--warn); background: #fdf9f0; }
+.entry b, .entry small, .entry span { display: block; }
+.entry b { font-size: clamp(13px,2.3vw,23px); }
+.entry .delta, .duel-total strong { text-align: center; border-inline: 1px solid var(--line); color: var(--warn); }
+.delta span { padding-top: 6px; font-size: 16px; }
+.delta small { font-size: 10px; overflow-wrap: anywhere; }
+.duel-total { background: var(--surface-2); border-top: 1px solid var(--line); }
+.archive p, .archive dl { margin: 10px 13px; overflow-wrap: anywhere; }
+@media (max-width: 580px) {
+  .ledger-cap, .duel-total, .entry { grid-template-columns: minmax(0,1fr) 74px minmax(0,1fr); }
+  .entry > div, .duel-total > * { padding: 5px; }
+  .kpis div { padding: 7px 3px; }
+  .editors { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,8 @@
+name: harbor-laytime
+services:
+  app:
+    build: .
+    ports: ["18460:8000"]
+    volumes: ["ledger:/var/lib/harbor"]
+volumes:
+  ledger:

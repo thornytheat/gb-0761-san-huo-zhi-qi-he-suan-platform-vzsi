@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ names[stage] }} · 散货滞期核算台</title>
+  {% for css in ['theme','layout','components'] %}<link rel="stylesheet" href="{{ url_for('static', filename=css ~ '.css') }}">{% endfor %}
+  <script defer src="{{ url_for('static', filename='desk.js') }}"></script>
+</head>
+<body>
+  <aside class="rail">
+    <a class="brand" href="/"><span aria-hidden="true">∥</span><h1>散货滞期核算台</h1></a>
+    <nav aria-label="核算导航">
+      {% for key,label in names.items() %}<a href="/{{ key }}{% if mode == 'clean' %}?sample=clean{% endif %}" {% if key == stage %}aria-current="page"{% endif %}>{{ label }}</a>{% endfor %}
+    </nav>
+    <small>泊位商务 / USD</small>
+  </aside>
+  <div class="work">
+    <header>
+      <h2>{{ names[stage] }}</h2><span class="stamp">{{ rule }} · {{ generated }}</span>
+      {% if certificate %}<a class="button" href="/api/export/{{ certificate.snapshot.run_id }}">下载证据包</a>{% endif %}
+    </header>
+    <main>
+      <form class="toolbar" method="post">
+        <label for="harbor-sample">航次资料</label>
+        <select name="sample" id="harbor-sample">
+          <option value="dirty" {{ 'selected' if mode == 'dirty' }}>跨年争议航次</option>
+          <option value="clean" {{ 'selected' if mode == 'clean' }}>标准完结航次</option>
+          <option value="custom" {{ 'selected' if mode == 'custom' }}>自填 CSV</option>
+        </select>
+        {% if stage != 'evidence' %}<button id="recalculate" type="submit">{{ '留档或重跑' if stage == 'runs' else '复算' }}</button>{% endif %}
+        <details id="sources" {% if mode == 'custom' %}open{% endif %}>
+          <summary>航次原件</summary>
+          <div class="editors">{% for key,value in sources.items() %}<label>{{ key }}.csv<textarea name="{{ key }}" spellcheck="false" rows="5">{{ value }}</textarea></label>{% endfor %}</div>
+        </details>
+        <output id="work-feedback" aria-live="polite"></output>
+      </form>
+      {% if error %}<section class="panel problem" role="alert">{{ error }}。检查原件后复算。</section>{% endif %}
+      {% if clock %}
+      <dl class="kpis">
+        <div><dt>总历时</dt><dd>{{ clock.elapsed_min }}<small> min</small></dd></div>
+        <div><dt>合同计时</dt><dd>{{ clock.counted }}<small> min</small></dd></div>
+        <div><dt>合同免计</dt><dd>{{ clock.exempt }}<small> min</small></dd></div>
+        <div><dt>待补证</dt><dd>{{ clock.missing }}<small> min</small></dd></div>
+        <div><dt>超额滞期</dt><dd>{{ clock.overtime_min }}<small> min</small></dd></div>
+      </dl>
+      {% endif %}
+      {% if ledger %}{% include 'duel.html' %}{% endif %}
+      {% if table %}
+      <section class="panel"><h3>{{ table[0] }}</h3><div class="scroll"><table><thead><tr>{% for col in table[1] %}<th>{{ col }}</th>{% endfor %}</tr></thead><tbody>
+      {% for row in table[2] %}<tr>{% for value in row %}<td class="{{ 'number' if value is number }}">{{ value if value is not none and value != '' else '—' }}</td>{% endfor %}</tr>{% else %}<tr><td colspan="6">当前没有区间。</td></tr>{% endfor %}
+      </tbody></table></div></section>
+      {% endif %}
+      {% if results.notice and stage == 'notice' %}<section class="panel notes">装卸窗 {{ results.notice.start }} 至 {{ results.notice.end }} · 港方完成原行 #{{ results.notice.completion_line }}</section>{% endif %}
+      {% if results.exceptions and stage == 'exceptions' %}<section class="panel notes">重叠切片 {{ results.exceptions.overlaps }} 段 · 窗外 {{ results.exceptions.outside|length }} 条</section>{% endif %}
+      {% if stage in ['runs','evidence'] %}{% include 'archive.html' %}{% endif %}
+      {% if intake %}<section class="panel"><details id="exception-log"><summary>原件隔离簿 · {{ intake.isolated|length }} 条</summary>
+        <div class="scroll"><table><thead><tr><th>来源</th><th>原行号</th><th>原因</th><th>原值</th></tr></thead><tbody>
+        {% for row in intake.isolated %}<tr><td>{{ row.source }}</td><td>{{ row.line }}</td><td>{{ row.code }}</td><td>{{ row.raw|join(' / ') }}</td></tr>{% else %}<tr><td colspan="4">本次没有隔离行。</td></tr>{% endfor %}
+        </tbody></table></div></details></section>{% endif %}
+    </main>
+    <footer><span>规则 {{ rule }}</span><span>历时 UTC · 半开区间</span><a href="/healthz">服务状态</a></footer>
+  </div>
+</body></html>

@@ -1,0 +1,2 @@
+version,start,end,priority,wait_min,allow_min,tier1_min,rate1_usd_min,rate2_usd_min
+R-C,2026-11-01T00:00Z,2026-12-01T00:00Z,10,20,60,15,3,5

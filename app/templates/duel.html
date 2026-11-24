@@ -1,0 +1,14 @@
+<section class="panel duel" aria-labelledby="duel-title">
+  <div class="balance"><h3 id="duel-title">滞期费分档对照</h3><span>合计 {{ ledger.rows|length }} 档 / 差异 {{ ledger.differences }} 档</span></div>
+  <div class="twin scroll" id="tier-evidence">
+    <div class="ledger-cap"><strong>船方账单</strong><strong>港方复算</strong></div>
+    {% for row in ledger.rows %}
+    <div class="entry {{ 'mismatch' if row.code != 'MATCH' }}">
+      <div><small>第 {{ row.tier }} 档{% if row.invoice_line %} · 原件 #{{ row.invoice_line }}{% endif %}</small><b>{{ row.actual_usd or '—' }}{% if row.actual_usd %} USD{% endif %}</b><span>{{ row.actual_minutes if row.actual_minutes is not none else '—' }} min</span></div>
+      <div class="delta"><span>{{ row.delta_usd if row.delta_usd is not none else '待证' }}</span><small>{{ row.code }}</small></div>
+      <div><small>第 {{ row.tier }} 档 · {{ row.rate_usd_min }} USD/min</small><b>{{ row.expected_usd }} USD</b><span>{{ row.minutes }} min</span></div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="duel-total"><span>实见 {{ ledger.seen_invoice_usd }} USD</span><strong>{{ ledger.delta_usd if ledger.delta_usd is not none else '待证' }}</strong><span>应计 {{ ledger.expected_usd }} USD</span></div>
+</section>
